@@ -1,6 +1,6 @@
 // Userek lekérése.
 jQuery.getJSON('users', function(users) {
-    console.log('users', users);
+    console.log('all users', users);
 });
 
 // Check user.
