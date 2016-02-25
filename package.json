@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "dependencies": {
         "express": "4.13.4",
+        "jade": "1.11.0",
         "mime-types": "~2.1.6",
         "negotiator": "0.5.3",
         "grunt": "0.4.5",
