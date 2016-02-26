@@ -13,7 +13,7 @@ var app = express();
 // Statikus fájlok.
 app.use(express.static(staticDir));
 app.set('view engine', 'jade');
-app.set('views', './src/view');
+app.set('views', './build/view');
 
 // Express use használata.
 app.use(function (req, res, next) {
@@ -26,20 +26,29 @@ app.use(function (req, res, next) {
 
 // Definiáljuk a szerver működését.
 app.get('/', function (req, res) {
-    res.render('index', {
-        title: 'ItFactory',
-        message: 'Yes it is!'
+    handleUsers(req, res, false, function(allUser) {
+        res.render('index', {
+            title: 'ItFactory Web Superhero',
+            message: 'Yes it is!',
+            users: allUser
+        });
     });
 });
 
 // Felhasználó modell.
-function handleUsers(req, res) {
+function handleUsers(req, res, next, callBack) {
     fs.readFile('./users.json', 'utf8', function (err, data) {
         if (err) throw err;
 
 
         //var path = req.url.split('/');
         var users = JSON.parse(data);
+
+        if (callBack) {
+            callBack(users);
+            return;
+        }
+
         var _user = {};
 
         // Ha nem kaptunk id-t.
