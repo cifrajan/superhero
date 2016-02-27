@@ -1,7 +1,17 @@
 // Beolvassuk a szükséges csomagokat.
 var express = require('express');
 var fs = require('fs');
-var itf = require('./my_modules/itf_module');
+var mongoose = require('mongoose');
+var itf = require('./models/itf');
+
+// Kapcsolódás az adatbázishoz.
+mongoose.connect('mongodb://localhost/test');
+
+// itf tábla model.
+itf.setConnection(mongoose);
+itf.read({ 'name': 'Joe' }, function(data){
+   console.log(data);
+});
 
 // GLobális változók.
 var port = 3333;
