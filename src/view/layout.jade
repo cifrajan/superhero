@@ -10,13 +10,10 @@ html(lang='')
     meta(name='author', content='')
     title Starter Template for Bootstrap 3.3.6
     link(rel='shortcut icon', href='')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css')
+    link(rel='stylesheet', href='vendor/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='vendor/bootstrap/dist/css/bootstrap-theme.min.css')
     style.
       body{padding-top:50px;}.starter-template{padding:40px 15px;text-align:center;}
-    //if IE
-      script(src='https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js')
-      script(src='https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js')
   body
     include ./menu.jade
     block content
