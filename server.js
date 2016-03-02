@@ -24,26 +24,26 @@ Users.setConnection(mongoose);
 //});
 
 // Dokumentum törlése.
-Users.getModel().remove({'name': new RegExp('jack', 'i')}, function(err,rem){
-   if (err) console.error(err);
-    else {
-        console.log(rem.result);
-    }
-});
-
-// Dokumentum frissítése.
-Users.getModel().update(
-    {name: new RegExp('jason', 'i')},
-    {girlFrienf: 'Mariann'},
-    function(err, user){
-        if (err)
-            console.error(err);
-});
+//Users.getModel().remove({'name': new RegExp('jack', 'i')}, function(err,rem){
+//   if (err) console.error(err);
+//    else {
+//        console.log(rem.result);
+//    }
+//});
+//
+//// Dokumentum frissítése.
+//Users.getModel().update(
+//    {name: new RegExp('jason', 'i')},
+//    {girlFrienf: 'Mariann'},
+//    function(err, user){
+//        if (err)
+//            console.error(err);
+//});
 
 // Első találat a feltételek alapján.
 Users.first({name: new RegExp('jason', 'i')}, function(user){
     if (user !== null) {
-        console.info("User name: ", user);
+        console.info("User name: ", user.name);
     } else {
         console.info("No user!");
     }
