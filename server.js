@@ -7,10 +7,12 @@ var bodyParser = require('body-parser');
 // Kapcsolódás az adatbázishoz.
 mongoose.connect('mongodb://localhost/superhero');
 
-// itf tábla model.
+// Modellek beolvasása.
 var models = {};
 models.users = require('./models/users');
 models.users.setConnection(mongoose);
+models.orders = require('./models/orders');
+models.orders.setConnection(mongoose);
 
 /////////////////////////////////////////////////////
 // GLobális változók.

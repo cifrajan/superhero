@@ -1,7 +1,10 @@
-table(class='table table-condensed')
+table(
+  class='table table-condensed'
+  data-ng-show='showTable'
+)
   thead
     tr
-      th(data-ng-repeat='th in ths') {{th}}
+      th(data-ng-repeat='th in ths' data-ng-bind='th')
   tbody
     // New user
     tr
@@ -19,7 +22,7 @@ table(class='table table-condensed')
         )
           span(class='glyphicon glyphicon-fire')
     tr(data-ng-repeat='row in users track by $index')
-      td {{row._id}}
+      td(data-ng-bind='row._id')
       td
         input.form-control(data-ng-model='row.name')
       td
