@@ -2,6 +2,7 @@
 var express = require('express');
 var fs = require('fs');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 // Kapcsolódás az adatbázishoz.
 mongoose.connect('mongodb://localhost/superhero');
@@ -21,6 +22,10 @@ var app = express();
 app.set('view engine', 'jade');
 app.set('views', './build/view');
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 // Statikus fájlok.
 app.use(express.static(staticDir));
 
@@ -33,53 +38,49 @@ app.use('/:model/:id*?', function(req, res, next) {
         switch (req.method.toLowerCase()){
             // READ
             case 'get':
-                models[req.params.model].getModel().find({}, function(err, data) {
-                    res.send(JSON.stringify(data));
+                var where = {};
+                if (req.params.id){
+                    where = { "_id": req.params.id };
+                };
+                models[req.params.model].getModel().find(where, function(err, data) {
+                    if (req.params.id){
+                        res.send(JSON.stringify(data[0]));
+                    } else {
+                        res.send(JSON.stringify(data));
+                    }
                 });
                 break;
             // UPDATE
             case 'post':
                 // Adatcsomagok fogadása.
-                var requestBody = '';
-                req.on("data", function(package){
-                    requestBody += package;
-                });
-                req.on("end", function(){
-                    requestBody = JSON.parse(requestBody);
-                    var newData = {};
-                    for (var k in requestBody){
-                        if (k == "_id"){
-                            continue;
-                        }
-                        newData[k] = requestBody[k];
+                var requestBody = req.body;
+                var newData = {};
+                for (var k in requestBody){
+                    if (k == "_id"){
+                        continue;
                     }
-                    models[req.params.model].getModel().update({
-                        _id: requestBody._id
-                        }, newData,
-                        function(err, data) {
-                            res.send('{"success": true}');
-                        });
+                    newData[k] = requestBody[k];
+                }
+                models[req.params.model].getModel().update({
+                    _id: requestBody._id
+                    }, newData,
+                    function(err, data) {
+                        res.send('{"success": true}');
                 });
                 break;
             // CREATE
             case 'put':
                 // Adatcsomagok fogadása.
-                var requestBody = '';
-                req.on("data", function(package){
-                    requestBody += package;
-                });
-                req.on("end", function(){
-                    requestBody = JSON.parse(requestBody);
-                    var row = {};
-                    for (var k in requestBody){
-                        if (k == "_id"){
-                            continue;
-                        }
-                        row[k] = requestBody[k];
+                var requestBody = req.body;
+                var row = {};
+                for (var k in requestBody){
+                    if (k == "_id"){
+                        continue;
                     }
-                    models[req.params.model].create(row, function(data){
-                       res.send(JSON.stringify(data));
-                    });
+                    row[k] = requestBody[k];
+                }
+                models[req.params.model].create(row, function(data){
+                   res.send(JSON.stringify(data));
                 });
                 break;
             // DELETE
