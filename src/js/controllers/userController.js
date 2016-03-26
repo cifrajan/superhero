@@ -41,7 +41,7 @@ superhero.controller( "userController", [
 
         // Adatok ellenőrzése
         $scope.checkNewUser = function(row){
-            $scope.formError = {};
+            $scope.formError = [];
             var fields = ['name', 'email', 'phone'];
             var returnValue = true;
             for (var k in fields){
@@ -56,8 +56,9 @@ superhero.controller( "userController", [
 
         // Új rekord beszúrása.
         $scope.insertRecord = function (row){
-            if (!$scope.checkNewUser(row));
+            if (!$scope.checkNewUser(row)){;
                 return;
+            };
             userFactory.insertUser( row )
                 .then(function(newUser){
                     $scope.users.push(newUser);
