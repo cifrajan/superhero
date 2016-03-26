@@ -2,15 +2,20 @@ extends ./layout.jade
 
 block content
   .container
-    .starter-template
+    .starter-div
       h1= title
-      .row(data-ng-controller='nameController')
+      .row(data-ng-controller='priceController')
         .col-xs-3
           input.form-control(data-ng-model='yourPrice')
           hr
           p A te árad: {{calcOwnPrice(yourPrice) | currencyFilter}}
           p Más ára: {{calcOtherPrice(yourPrice) | currencyFilter}}
           p Teljes ár: {{yourPrice | currencyFilter}}
-      ul
-        each user in users
-          li #{user.id}: #{user.name} - #{user.email}
+      .row(data-ng-controller='userController')
+        .col-xs-12
+          p {{yourPrice}}
+          include ./userTable.jade
+
+
+        //each user in users
+        //li #{user.id}: #{user.name} - #{user.email}
