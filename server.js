@@ -1,24 +1,108 @@
 // Beolvassuk a szükséges csomagokat.
 var express = require('express');
 var fs = require('fs');
-var itf = require('./my_modules/itf_module');
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
+// Kapcsolódás az adatbázishoz.
+mongoose.connect('mongodb://localhost/superhero');
+
+// Modellek beolvasása.
+var models = {};
+models.users = require('./models/users');
+models.users.setConnection(mongoose);
+models.orders = require('./models/orders');
+models.orders.setConnection(mongoose);
+
+/////////////////////////////////////////////////////
 // GLobális változók.
 var port = 3333;
 var staticDir = 'build'
 
 // Létrehozunk egy express szerver példányt.
 var app = express();
-
-// Statikus fájlok.
-app.use(express.static(staticDir));
 app.set('view engine', 'jade');
 app.set('views', './build/view');
 
-// Express use használata.
-app.use(function (req, res, next) {
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Statikus fájlok.
+app.use(express.static(staticDir));
+
+app.use('/:model/:id*?', function(req, res, next) {
+
+
     if (req.headers['x-requested-with'] == 'XMLHttpRequest') {
-        res.send(JSON.stringify({'hello': 'world'}));
+    console.log ( req.method);
+
+        switch (req.method.toLowerCase()){
+            // READ
+            case 'get':
+                var where = {};
+                if (req.params.id){
+                    where = { "_id": req.params.id };
+                };
+                models[req.params.model].getModel().find(where, function(err, data) {
+                    if (req.params.id){
+                        res.send(JSON.stringify(data[0]));
+                    } else {
+                        res.send(JSON.stringify(data));
+                    }
+                });
+                break;
+            // UPDATE
+            case 'post':
+                // Adatcsomagok fogadása.
+                var requestBody = req.body;
+                var newData = {};
+                for (var k in requestBody){
+                    if (k == "_id"){
+                        continue;
+                    }
+                    newData[k] = requestBody[k];
+                }
+                models[req.params.model].getModel().update({
+                    _id: requestBody._id
+                    }, newData,
+                    function(err, data) {
+                        res.send('{"success": true}');
+                });
+                break;
+            // CREATE
+            case 'put':
+                // Adatcsomagok fogadása.
+                var requestBody = req.body;
+                var row = {};
+                for (var k in requestBody){
+                    if (k == "_id"){
+                        continue;
+                    }
+                    row[k] = requestBody[k];
+                }
+                models[req.params.model].create(row, function(data){
+                   res.send(JSON.stringify(data));
+                });
+                break;
+            // DELETE
+            case 'delete':
+                if (req.params.id) {
+                    var where = {_id: req.params.id};
+                    models[req.params.model].getModel().remove(
+                        where,
+                        function(err, rem){
+                            if (err) console.error(err);
+                            res.send(JSON.stringify(rem));
+                        });
+                } else {
+                    res.send('{"error": "no is"}');
+                }
+                break;
+            default:
+                res.send('{"error": "unsupported method"}');
+        }
+
     } else {
         next();
     }
@@ -26,6 +110,7 @@ app.use(function (req, res, next) {
 
 // Definiáljuk a szerver működését.
 app.get('/', function (req, res) {
+//    console.log('Jött egy kliens paraméter nélküli kérés!');
     handleUsers(req, res, false, function(allUser) {
         res.render('index', {
             title: 'ItFactory Web Superhero',

@@ -2,19 +2,18 @@ extends ./layout.jade
 
 block content
   .container
-    .starter-template
-      h1(
-          class='my-h1'
-          id='h1-01'
-          data-ng-model='myModel'
-      )= title
-      h2(class=classes) Message: #{message}
-      p.lead&attributes(atts)
-        | Now you can start your own project with
-        a(target='_blank', href='http://getbootstrap.com/') Bootstrap 3.3.6
-        | . This plugin is a fork from
-        a(href='https://github.com/le717/brackets-html-skeleton#readme') HTML Skeleton
-        | .
-      ul
-        each user in users
-          li #{user.id}: #{user.name} - #{user.email}
+    .starter-div
+      h1= title
+      .row(data-ng-controller='priceController')
+        .col-xs-3
+          div(data-calc-brutto='1', data-amount='userPrice')
+          p Ár:
+            span(data-ng-bind='yourPrice')
+            span !
+      .row(data-ng-controller='userController')
+        .col-xs-12
+          include ./userTable.jade
+
+
+        //each user in users
+        //li #{user.id}: #{user.name} - #{user.email}

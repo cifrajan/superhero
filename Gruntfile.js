@@ -8,13 +8,22 @@ module.exports = function (grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: 'src/**/*.js',
-                dest: 'build/js/all.js'
+                src: [
+                    'src/vendor/jquery/dist/jquery.min.js',
+                    'src/vendor/bootstrap/dist/js/bootstrap.min.js',
+                    'src/vendor/angular/angular.min.js',
+                    'src/vendor/angular-currency-filter/currencyModule.js',
+                    'src/js/main.js',
+                    'src/js/factory/*.js',
+                    'src/js/directives/*.js',
+                    'src/js/controllers/*.js'
+                    ],
+                dest: 'build/js/all.js',
             }
         },
         watch: {
             scripts: {
-                files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css', 'src/**/*jade'],
+                files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css', 'src/**/*jade', 'Gruntfile.js'],
                 tasks: ['dev'],
                 options: {
                     spawn: false,
@@ -32,6 +41,12 @@ module.exports = function (grunt) {
                         src: ['**/*.html', 'img/*', '**/*.jade'],
                         dest: 'build/',
                         filter: 'isFile'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/vendor/bootstrap/',
+                        src: ['fonts/**'],
+                        dest: 'build/'
                     }
                 ],
             }
@@ -45,7 +60,8 @@ module.exports = function (grunt) {
                 "globals": {
                     "jQuery": true,
                     "console": true,
-                    "module": true
+                    "module": true,
+                    "angular": true
                 }
             },
             all: ['Gruntfile.js', 'src/js/*.js']
@@ -62,6 +78,21 @@ module.exports = function (grunt) {
                     dest: 'build/img/'
                 }]
             }
+        },
+        cssmin: {
+            options: {
+                shorthandCompacting: false,
+                roundingPrecision: -1
+            },
+            target: {
+                files: {
+                    'build/css/all.min.css': [
+                        'src/vendor/bootstrap/dist/css/bootstrap.min.css',
+                        'src/vendor/bootstrap/dist/css/bootstrap-theme.min.css',
+                        'src/css/**/*.css'
+                    ]
+                }
+            }
         }
     });
 
@@ -72,9 +103,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     // Default task(s).
     grunt.registerTask('default', ['watch']);
-    grunt.registerTask('dev', ['jshint', 'clean', 'copy', 'uglify']);
+    grunt.registerTask('dev', ['jshint', 'clean', 'copy', 'uglify', 'cssmin']);
 
 };

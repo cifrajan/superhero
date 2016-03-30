@@ -1,13 +1,19 @@
-// Userek lekérése.
-jQuery.getJSON('users', function(users) {
-    console.log('all users', users);
-});
+/*
+Angular.js-ben vannak:
+    Modul
+    Controller
+    Factory
+    Service
+    Filter
+    Directive
+*/
 
-// Check user.
-function checkUser( user ) {
-    if ( user.role > 4 ) {
-        return true;
-    } else {
-        return false;
-    }
-}
+// Fő modul definiálása.
+var superhero = angular.module("superhero", ['currencyModule']);
+
+// Module futásának kezdete.
+superhero.run(["$http", function($http) {
+    $http.defaults.headers.common['x-requested-with'] =
+        'XMLHttpRequest';
+}]);
+

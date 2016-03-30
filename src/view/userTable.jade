@@ -1,0 +1,45 @@
+table(
+  class='table table-condensed'
+  data-ng-show='showTable'
+)
+  thead
+    tr
+      th(data-ng-repeat='th in ths' data-ng-bind='th')
+  tbody
+    // New user
+    tr
+      td(data-ng-repeat='th in ths')
+        input.form-control(
+          data-ng-if='!$last && !$first'
+          data-ng-model='newUser[th]'
+          data-ng-class='{\'is-error\': formError[th]}'
+        )
+        button(
+          data-ng-if='$last'
+          type='button'
+          class='btn btn-success'
+          data-ng-click='insertRecord(newUser)'
+        )
+          span(class='glyphicon glyphicon-fire')
+    tr(data-ng-repeat='row in users track by $index')
+      td(data-ng-bind='row._id')
+      td
+        input.form-control(data-ng-model='row.name')
+      td
+        input.form-control(data-ng-model='row.email')
+      td
+        input.form-control(data-ng-model='row.phone')
+      td
+        .btn-group(role='group')
+          button(
+            type='button'
+            class='btn btn-info'
+            data-ng-click='updateRecord(row)'
+          )
+            span(class='glyphicon glyphicon-refresh')
+          button(
+            type='button'
+            class='btn btn-danger'
+            data-ng-click='deleteUser(row)'
+          )
+            span(class='glyphicon glyphicon-remove')
